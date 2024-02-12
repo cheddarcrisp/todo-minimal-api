@@ -26,57 +26,30 @@ if (app.Environment.IsDevelopment())
 app.UseCors();
 
 var repo = new TodoRepo();
+var service = new TodoService(BASE_URL, repo);
 
-app.MapGet("/", () =>
-{
-    return repo.All().Select(x => MapTodo(x));
-})
+app.MapGet("/", service.All)
 .WithName("GetTodos")
 .WithOpenApi();
 
-app.MapGet("/{id}", (Guid id) =>
-{
-    return MapTodo(repo.Find(id));
-})
+app.MapGet("/{id}", service.Find)
 .WithName("GetTodo")
 .WithOpenApi();
 
-app.MapPost("/", (Todo todo) =>
-{
-    return MapTodo(repo.Add(todo));
-})
+app.MapPost("/", service.Add)
 .WithName("CreateTodo")
 .WithOpenApi();
 
-app.MapDelete("/", () => {
-    repo.Clear();
-})
+app.MapDelete("/", service.Clear)
 .WithName("DeleteTodos")
 .WithOpenApi();
 
-app.MapPatch("/{id}", (Guid id, ApiTodo todo) =>
-{
-    return MapTodo(repo.Update(id, todo.Title, todo.Order, todo.Completed));
-})
+app.MapPatch("/{id}", service.Update)
 .WithName("UpdateTodo")
 .WithOpenApi();
 
-app.MapDelete("/{id}", (Guid id) => {
-    repo.Delete(id);
-})
+app.MapDelete("/{id}", service.Delete)
 .WithName("DeleteTodo")
 .WithOpenApi();
 
 app.Run(BASE_URL);
-
-ApiTodo MapTodo(Todo todo) {
-    return new(
-        todo.Order,
-        todo.Title,
-        todo.Completed,
-        $"{BASE_URL}/{todo.Id}"
-    );
-}
-
-public record ApiTodo(int? Order, string? Title, bool? Completed, string Url);
-

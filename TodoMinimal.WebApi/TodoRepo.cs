@@ -4,9 +4,8 @@ public class TodoRepo {
     private List<Todo> todos = new();
 
     public Todo Add(Todo todo) {
-        var newTodo = todo with { Id = Guid.NewGuid() };
-        todos.Add(newTodo);
-        return newTodo;
+        todos.Add(todo);
+        return todo;
     }
 
     public IEnumerable<Todo> All() {
