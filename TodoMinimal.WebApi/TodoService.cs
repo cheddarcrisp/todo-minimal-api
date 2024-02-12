@@ -1,5 +1,3 @@
-using System.Text;
-
 public record TodoDTO(int? Order, string? Title, bool? Completed, string Url);
 
 public class TodoService {
